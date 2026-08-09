@@ -1,5 +1,5 @@
 /* ============================================================
-   THEMES — TypeCraft v2
+   THEMES — Monara Type v2
    Each theme overrides the CSS custom properties on :root.
    Applied via a class on <body>: e.g. <body class="theme-ocean">
 ============================================================ */
@@ -175,3 +175,234 @@ body.theme-hacker {
   --sans: 'JetBrains Mono', 'Courier New', monospace;
 }
 body.theme-hacker .char { color: #003a10; }
+
+/* ============================================================
+   ADDITIONAL THEMES (Nebula redesign)
+============================================================ */
+
+/* ---- OCEAN (deep cyan/teal) ---- */
+body.theme-ocean {
+  --bg:      #04100e;
+  --bg2:     #081816;
+  --bg3:     #0d211e;
+  --bg4:     #132b27;
+  --bg5:     #1a3732;
+  --border:  rgba(45,212,191,0.06);
+  --border2: rgba(45,212,191,0.11);
+  --border3: rgba(45,212,191,0.20);
+  --text:    #e0fff9;
+  --text2:   #69b8a8;
+  --text3:   #2c6b5f;
+  --text4:   #173f37;
+
+  --p:       #2dd4bf;
+  --p2:      #0d9488;
+  --p3:      #0f766e;
+  --pglow:   rgba(45,212,191,0.22);
+  --pglow2:  rgba(45,212,191,0.07);
+  --accent2: #22d3ee;
+
+  --green:   #34d399;
+  --cyan:    #22d3ee;
+  --blue:    #60a5fa;
+  --pink:    #f472b6;
+}
+body.theme-ocean .char { color: var(--text3); }
+
+/* ---- EMBER (red/orange) ---- */
+body.theme-ember {
+  --bg:      #0f0606;
+  --bg2:     #1a0b08;
+  --bg3:     #24100a;
+  --bg4:     #2e170e;
+  --bg5:     #3a2012;
+  --border:  rgba(251,146,60,0.06);
+  --border2: rgba(251,146,60,0.12);
+  --border3: rgba(251,146,60,0.20);
+  --text:    #fff0e4;
+  --text2:   #d08a5a;
+  --text3:   #7a4a22;
+  --text4:   #4a2a12;
+
+  --p:       #fb923c;
+  --p2:      #ea580c;
+  --p3:      #c2410c;
+  --pglow:   rgba(251,146,60,0.22);
+  --pglow2:  rgba(251,146,60,0.07);
+  --accent2: #f87171;
+
+  --green:   #4ade80;
+  --amber:   #fbbf24;
+  --red:     #f87171;
+  --cyan:    #22d3ee;
+  --pink:    #f472b6;
+}
+
+/* ---- MINT (fresh teal-green) ---- */
+body.theme-mint {
+  --bg:      #050c0c;
+  --bg2:     #0a1514;
+  --bg3:     #0f1f1d;
+  --bg4:     #152a27;
+  --bg5:     #1c362f;
+  --border:  rgba(52,211,153,0.06);
+  --border2: rgba(52,211,153,0.12);
+  --border3: rgba(52,211,153,0.20);
+  --text:    #e6fff4;
+  --text2:   #6cc99f;
+  --text3:   #2f6b50;
+  --text4:   #1a3d2d;
+
+  --p:       #34d399;
+  --p2:      #10b981;
+  --p3:      #059669;
+  --pglow:   rgba(52,211,153,0.22);
+  --pglow2:  rgba(52,211,153,0.07);
+  --accent2: #22d3ee;
+
+  --green:   #4ade80;
+  --cyan:    #2dd4bf;
+  --blue:    #60a5fa;
+}
+
+/* ---- ICE (cool pale blue) ---- */
+body.theme-ice {
+  --bg:      #06090f;
+  --bg2:     #0b1019;
+  --bg3:     #101826;
+  --bg4:     #162033;
+  --bg5:     #1d2a40;
+  --border:  rgba(103,232,249,0.06);
+  --border2: rgba(103,232,249,0.11);
+  --border3: rgba(103,232,249,0.20);
+  --text:    #e8f6ff;
+  --text2:   #7fb6d9;
+  --text3:   #3a6580;
+  --text4:   #1d3a4d;
+
+  --p:       #67e8f9;
+  --p2:      #06b6d4;
+  --p3:      #0891b2;
+  --pglow:   rgba(103,232,249,0.22);
+  --pglow2:  rgba(103,232,249,0.07);
+  --accent2: #38bdf8;
+
+  --green:   #34d399;
+  --blue:    #60a5fa;
+  --cyan:    #67e8f9;
+  --pink:    #f472b6;
+}
+
+/* ---- NEON (vivid purple → pink) ---- */
+body.theme-neon {
+  --bg:      #0b0512;
+  --bg2:     #12081d;
+  --bg3:     #190d29;
+  --bg4:     #201236;
+  --bg5:     #2a1a44;
+  --border:  rgba(217,70,239,0.06);
+  --border2: rgba(217,70,239,0.12);
+  --border3: rgba(217,70,239,0.22);
+  --text:    #f6eaff;
+  --text2:   #b98ad6;
+  --text3:   #6d3d8a;
+  --text4:   #40214f;
+
+  --p:       #d946ef;
+  --p2:      #a21caf;
+  --p3:      #86198f;
+  --pglow:   rgba(217,70,239,0.24);
+  --pglow2:  rgba(217,70,239,0.08);
+  --accent2: #a78bfa;
+
+  --green:   #4ade80;
+  --cyan:    #22d3ee;
+  --amber:   #fbbf24;
+  --pink:    #f472b6;
+}
+
+/* ---- BERRY (deep magenta) ---- */
+body.theme-berry {
+  --bg:      #12050c;
+  --bg2:     #1c0914;
+  --bg3:     #260e1c;
+  --bg4:     #301426;
+  --bg5:     #3d1a30;
+  --border:  rgba(236,72,153,0.06);
+  --border2: rgba(236,72,153,0.12);
+  --border3: rgba(236,72,153,0.20);
+  --text:    #ffe9f4;
+  --text2:   #d176a0;
+  --text3:   #7e3560;
+  --text4:   #4a1d38;
+
+  --p:       #ec4899;
+  --p2:      #db2777;
+  --p3:      #be185d;
+  --pglow:   rgba(236,72,153,0.22);
+  --pglow2:  rgba(236,72,153,0.07);
+  --accent2: #a78bfa;
+
+  --green:   #4ade80;
+  --amber:   #fbbf24;
+  --red:     #f87171;
+  --cyan:    #22d3ee;
+}
+
+/* ============================================================
+   CLASSIC (typewriter paper)
+   Warm cream paper, dark ink, amber accents, Courier type.
+============================================================ */
+body.theme-classic {
+  --bg:      #f3ead7;
+  --bg2:     #faf4e4;
+  --bg3:     #ecdfc4;
+  --bg4:     #ded0ae;
+  --bg5:     #cdbb93;
+  --border:  rgba(90,70,40,0.10);
+  --border2: rgba(90,70,40,0.16);
+  --border3: rgba(90,70,40,0.28);
+  --text:    #3b3226;
+  --text2:   #7d6c50;
+  --text3:   #a6936a;
+  --text4:   #c4b28d;
+
+  --p:       #b45309;
+  --p2:      #92400e;
+  --p3:      #78350f;
+  --pglow:   rgba(180,83,9,0.20);
+  --pglow2:  rgba(180,83,9,0.08);
+  --accent2: #d97706;
+
+  --green:   #15803d;
+  --green2:  #166534;
+  --red:     #b91c1c;
+  --red2:    #991b1b;
+  --amber:   #b45309;
+  --blue:    #1d4ed8;
+  --cyan:    #0e7490;
+  --pink:    #be185d;
+
+  --mono: 'Courier New', 'Courier', monospace;
+  --sans: 'Georgia', 'Times New Roman', serif;
+
+  --glass: linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,252,245,0.45) 100%);
+  --shadow-card: 0 24px 60px -30px rgba(90,70,40,0.45), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+body.theme-classic::before {
+  background:
+    radial-gradient(ellipse 55% 40% at 12% -8%,  rgba(217,119,6,0.14) 0%, transparent 62%),
+    radial-gradient(ellipse 45% 38% at 88% 0%,   rgba(180,83,9,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 50% 115%, rgba(180,83,9,0.06) 0%, transparent 60%);
+}
+body.theme-classic .char { color: var(--text3); }
+body.theme-classic .char.correct { color: var(--green); text-shadow: none; }
+body.theme-classic .char.wrong {
+  color: var(--red);
+  background: rgba(185,28,28,0.12);
+  box-shadow: 0 0 0 1px rgba(185,28,28,0.18);
+}
+body.theme-classic .char.cursor { color: #fff; background: var(--p); box-shadow: 0 0 12px var(--pglow); }
+body.theme-classic .word.wrong { text-decoration-color: rgba(185,28,28,0.4); }
+body.theme-classic .typing-input { background: rgba(255,252,245,0.72); border-color: var(--border3); }
+body.theme-classic .mob-nav { background: rgba(250,244,228,0.95); }

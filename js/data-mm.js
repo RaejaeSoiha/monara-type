@@ -1,6 +1,6 @@
 /* ============================================================
    DATA-MM.JS — Burmese (မြန်မာ) text library
-   TypeCraft v2
+   Monara Type v2
    Structure: TXT_MM.mm[difficulty][mode] = string[]
 ============================================================ */
 const TXT_MM = {

@@ -1,6 +1,6 @@
 /* ============================================================
    APP.JS — View router, theme switcher, init
-   TypeCraft v2
+   Monara Type v2
    Depends on: all other JS modules
 ============================================================ */
 
@@ -8,6 +8,13 @@
    VIEW ROUTER
 ---------------------------------------------------------- */
 function gotoView(v) {
+  // Pause/abort timers of the view being left so sessions don't run in the background
+  const cur = document.querySelector(".view.active");
+  if (cur) {
+    if (cur.id === "view-typing" && P.timer) { clearInterval(P.timer); P.timer = null; }
+    if (cur.id === "view-race") stopRace();
+  }
+
   document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
   document.querySelectorAll(".nav-tab").forEach(el => el.classList.remove("active"));
   document.getElementById("view-" + v).classList.add("active");
@@ -19,6 +26,7 @@ function gotoView(v) {
     if ((keywords[v] || []).some(k => t.includes(k.toLowerCase()))) el.classList.add("active");
   });
 
+  if (v === "typing" && P.started && !P.finished && !P.timer) startTimer();
   if (v === "leaderboard") renderLB();
   if (v === "stats")       renderStats();
   if (v === "race")        setupRace();
@@ -30,12 +38,19 @@ function gotoView(v) {
 ---------------------------------------------------------- */
 const THEMES = [
   { id:"default",  name:"Dark Purple", sub:"Original",   dot:"#7c3aed" },
+  { id:"ocean",    name:"Ocean",       sub:"Deep teal",  dot:"#0d9488" },
+  { id:"neon",     name:"Neon",        sub:"Vivid purple", dot:"#a21caf" },
+  { id:"ember",    name:"Ember",       sub:"Warm orange", dot:"#ea580c" },
+  { id:"mint",     name:"Mint",        sub:"Fresh green", dot:"#10b981" },
+  { id:"ice",      name:"Ice",         sub:"Cool cyan",  dot:"#06b6d4" },
+  { id:"berry",    name:"Berry",       sub:"Deep magenta", dot:"#db2777" },
   { id:"midnight", name:"Midnight",    sub:"Deep blue",  dot:"#2563eb" },
   { id:"forest",   name:"Forest",      sub:"Dark green", dot:"#16a34a" },
   { id:"sunset",   name:"Sunset",      sub:"Warm amber", dot:"#d97706" },
   { id:"rose",     name:"Rose",        sub:"Pink/magenta", dot:"#db2777" },
   { id:"light",    name:"Light",       sub:"Clean white",  dot:"#6d28d9" },
   { id:"hacker",   name:"Hacker",      sub:"Terminal",   dot:"#00bb30" },
+  { id:"classic",  name:"Classic",     sub:"Typewriter", dot:"#b45309" },
 ];
 
 let currentTheme = "default";
@@ -55,15 +70,16 @@ function openThemePanel() {
   const grid  = document.getElementById("themeGrid");
 
   // Build swatches
+  const lightTheme = (id) => id === 'light' || id === 'classic';
   grid.innerHTML = THEMES.map(t => `
     <div class="theme-swatch ${t.id === currentTheme ? "active" : ""}"
          data-theme="${t.id}"
-         style="background:${t.id === 'light' ? '#f5f5f8' : '#0f0f1a'};
+         style="background:${lightTheme(t.id) ? (t.id === 'classic' ? '#f3ead7' : '#f5f5f8') : '#0f0f1a'};
                 border-color:${t.id === currentTheme ? t.dot : 'transparent'}"
          onclick="applyTheme('${t.id}')">
       <div class="ts-dot" style="background:${t.dot}"></div>
-      <div class="ts-name" style="color:${t.id === 'light' ? '#1a1a2e' : '#ece9ff'}">${t.name}</div>
-      <div class="ts-sub"  style="color:${t.id === 'light' ? '#4a4a6a' : '#8b86aa'}">${t.sub}</div>
+      <div class="ts-name" style="color:${lightTheme(t.id) ? '#1a1a2e' : '#ece9ff'}">${t.name}</div>
+      <div class="ts-sub"  style="color:${lightTheme(t.id) ? '#7d6c50' : '#8b86aa'}">${t.sub}</div>
     </div>`).join("");
 
   panel.classList.add("show");
@@ -87,6 +103,18 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     closeThemePanel();
     closeModal("saveModal");
+  }
+});
+
+/* Pause timers while the tab is hidden so sessions don't drain */
+document.addEventListener("visibilitychange", () => {
+  const active = document.querySelector(".view.active");
+  if (document.hidden) {
+    if (P.timer) { clearInterval(P.timer); P.timer = null; }
+    if (R.timer) { clearInterval(R.timer); R.timer = null; }
+  } else {
+    if (P.started && !P.finished && !P.timer && active && active.id === "view-typing") startTimer();
+    if (R.started && !R.finished && !R.timer && active && active.id === "view-race") resumeRaceTimer();
   }
 });
 

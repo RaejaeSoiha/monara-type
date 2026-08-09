@@ -1,10 +1,10 @@
 /* ============================================================
    AUDIO.JS — Web Audio sound engine
-   TypeCraft v2
+   Monara Type v2
 ============================================================ */
 
 let _audioCtx = null;
-let soundOn   = false;
+let soundOn   = LS.sound.get();
 
 function _getCtx() {
   if (!_audioCtx)
@@ -76,9 +76,20 @@ function playRaceStart() {
 /** Toggle sound on/off — call from the sound button */
 function toggleSound() {
   soundOn = !soundOn;
+  LS.sound.set(soundOn);
   const btn = document.getElementById("soundBtn");
   if (!btn) return;
   btn.textContent = soundOn ? "🔊 Sound" : "🔇 Sound";
   btn.className   = "sound-btn" + (soundOn ? " on" : "");
   if (soundOn) _getCtx(); // warm-up AudioContext on user gesture
 }
+
+/* Sync the sound button label/state with the persisted preference */
+function initSoundUI() {
+  const btn = document.getElementById("soundBtn");
+  if (!btn) return;
+  btn.textContent = soundOn ? "🔊 Sound" : "🔇 Sound";
+  btn.className   = "sound-btn" + (soundOn ? " on" : "");
+}
+
+initSoundUI();

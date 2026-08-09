@@ -1,6 +1,6 @@
 /* ============================================================
    DATA-EN.JS — English text library
-   TypeCraft v2
+   Monara Type v2
    Structure: TXT_EN.en[difficulty][mode] = string[]
 ============================================================ */
 const TXT_EN = {

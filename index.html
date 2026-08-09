@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>TypeCraft v2</title>
+<meta name="theme-color" content="#080810">
+<meta name="description" content="Monara Type — multilingual typing test (English, Burmese, Mon) with races, leaderboards and stats.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Monara Type v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Myanmar:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -20,7 +25,7 @@
     <div class="logo">
       <div class="logo-icon">⌨</div>
       <div>
-        <div class="logo-text">Type<span>Craft</span> <span class="logo-v">v2</span></div>
+        <div class="logo-text">Monara <span>Type</span> <span class="logo-v">v2</span></div>
       </div>
     </div>
 
@@ -43,8 +48,9 @@
     <div class="controls-row">
       <div class="pill-group" id="langGrp">
         <button class="pill-btn active" data-lang="en">EN</button>
+        <button class="pill-btn" data-lang="mon"> မန်</button>
         <button class="pill-btn" data-lang="mm">မြန်မာ</button>
-        <button class="pill-btn" data-lang="mon">Mon</button>
+        
       </div>
       <div class="pill-group" id="modeGrp">
         <button class="pill-btn active" data-mode="words">Words</button>
@@ -58,6 +64,12 @@
         <button class="pill-btn" data-time="60">60s</button>
         <button class="pill-btn" data-time="120">2m</button>
       </div>
+      <div class="pill-group" id="wordsGrp">
+        <button class="pill-btn active" data-words="0">∞</button>
+        <button class="pill-btn" data-words="10">10</button>
+        <button class="pill-btn" data-words="25">25</button>
+        <button class="pill-btn" data-words="50">50</button>
+      </div>
       <div class="pill-group" id="diffGrp">
         <button class="pill-btn active" data-diff="easy">Easy</button>
         <button class="pill-btn" data-diff="medium">Med</button>
@@ -68,6 +80,7 @@
         <button class="pill-btn" data-hl="word">Word</button>
       </div>
       <button class="sound-btn" id="soundBtn" onclick="toggleSound()">🔇 Sound</button>
+      <button class="sound-btn" id="keymapBtn" onclick="toggleKeymap()">⌨ Keys</button>
       <button class="sound-btn mon-kbd-btn" id="monKbdBtn" onclick="toggleMonKbd()" style="display:none">⌨ Mon</button>
     </div>
 
@@ -93,6 +106,22 @@
         placeholder="Start typing…"
         autocomplete="off" autocorrect="off" autocapitalize="off"
         spellcheck="false" inputmode="text"></textarea>
+
+      <!-- Live WPM chart (appears once typing starts) -->
+      <div class="live-chart" id="liveChartWrap">
+        <div class="live-chart-head">
+          <div class="live-chart-title">Live WPM</div>
+          <div class="live-chart-live" id="liveWpmLabel">0 WPM</div>
+        </div>
+        <div class="chart-wrap"><canvas id="liveChart"></canvas></div>
+      </div>
+
+      <!-- Keyboard keymap with finger hints -->
+      <div class="keymap-wrap" id="keymapWrap">
+        <div class="keymap" id="keymap"></div>
+        <div class="keymap-hint" id="keymapHint"></div>
+      </div>
+
       <div class="mobile-keys" id="mobileKeys">
         <button class="mk-btn" onclick="mobileInsert(' ')">Space</button>
         <button class="mk-btn" onclick="mobileBackspace()">⌫</button>
@@ -129,6 +158,12 @@
           <div class="result-stat-label">Chars</div>
         </div>
       </div>
+      <div class="live-chart">
+        <div class="live-chart-head">
+          <div class="live-chart-title">WPM Over Time</div>
+        </div>
+        <div class="chart-wrap"><canvas id="rChart"></canvas></div>
+      </div>
       <div class="action-row">
         <button class="btn primary" onclick="restartTest()">↺ Restart</button>
         <button class="btn" onclick="newText()">New Text</button>
@@ -158,7 +193,7 @@
         <div class="pill-group" id="raceLangGrp">
           <button class="pill-btn active" data-rlang="en">EN</button>
           <button class="pill-btn" data-rlang="mm">မြန်မာ</button>
-          <button class="pill-btn" data-rlang="mon">Mon</button>
+          <button class="pill-btn" data-rlang="mon">မန်</button>
         </div>
         <div class="pill-group" id="raceDiffGrp">
           <button class="pill-btn active" data-rdiff="easy">Easy</button>
@@ -169,6 +204,11 @@
           <button class="pill-btn" data-bots="1">1 Bot</button>
           <button class="pill-btn active" data-bots="2">2 Bots</button>
           <button class="pill-btn" data-bots="3">3 Bots</button>
+        </div>
+        <div class="pill-group" id="raceTimeGrp">
+          <button class="pill-btn" data-rtime="60">1m</button>
+          <button class="pill-btn active" data-rtime="120">2m</button>
+          <button class="pill-btn" data-rtime="300">5m</button>
         </div>
       </div>
       <button class="btn primary" onclick="startRace()" style="font-size:15px;padding:13px 36px;">Start Race 🏁</button>
@@ -198,6 +238,10 @@
           <button class="mk-btn" onclick="mobileInsert(' ', true)">Space</button>
           <button class="mk-btn" onclick="mobileBackspace(true)">⌫</button>
         </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px">
+          <button class="sound-btn mon-kbd-btn" id="raceMonKbdBtn" onclick="toggleMonKbd(true)" style="display:none">⌨ Mon</button>
+        </div>
+        <div class="mon-kbd" id="raceMonKbd"></div>
       </div>
     </div>
 
@@ -208,6 +252,7 @@
       <div class="race-podium"   id="racePodium"></div>
       <div class="action-row" style="margin-top:20px">
         <button class="btn primary" onclick="setupRace()">Race Again 🏎</button>
+        <button class="btn" id="raceSaveBtn" onclick="openSaveModal()">💾 Save Score</button>
         <button class="btn" onclick="gotoView('typing')">Practice Mode</button>
       </div>
     </div>
@@ -315,11 +360,11 @@
 
 <!-- ════════════════════════════════════
      SCRIPTS (load order matters)
-     data-en/data-mm/data-mon → data → storage → audio → practice → race → stats → app
+     data-en/data-mm → data → storage → audio → practice → race → stats → app
+     data-mon.js is LAZY-LOADED on demand (see data.js loadMonData)
 ════════════════════════════════════════ -->
 <script src="js/data-en.js"></script>
 <script src="js/data-mm.js"></script>
-<script src="js/data-mon.js"></script>
 <script src="js/data.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/audio.js"></script>
@@ -327,6 +372,12 @@
 <script src="js/race.js"></script>
 <script src="js/stats.js"></script>
 <script src="js/app.js"></script>
+
+<script>
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
 
 </body>
 </html>

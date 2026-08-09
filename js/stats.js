@@ -1,6 +1,6 @@
 /* ============================================================
    STATS.JS — Leaderboard & statistics view
-   TypeCraft v2
+   Monara Type v2
    Depends on: data.js, storage.js
 ============================================================ */
 
@@ -39,7 +39,7 @@ function renderLB() {
     <thead>
       <tr>
         <th>#</th><th>Player</th><th>WPM</th><th>Accuracy</th>
-        <th>Lang</th><th>Diff</th><th>Date</th>
+        <th>Lang</th><th>Diff</th><th>Mode</th><th>Date</th>
       </tr>
     </thead>
     <tbody>
@@ -51,6 +51,7 @@ function renderLB() {
           <td>${r.acc}%</td>
           <td><span class="pill pill-${r.lang}">${LANG_SHORT[r.lang] || r.lang}</span></td>
           <td><span class="pill pill-${r.diff}">${r.diff}</span></td>
+          <td><span class="pill">${r.mode || "—"}</span></td>
           <td style="color:var(--text3);font-size:11px">${new Date(r.ts).toLocaleDateString()}</td>
         </tr>`).join("")}
     </tbody>
@@ -90,6 +91,7 @@ function renderStats() {
   const aAcc = Math.round(accs.reduce((a, b) => a + b, 0) / accs.length);
   const rec  = h.slice(0, 10);
   const rAvg = Math.round(rec.map(x => x.wpm).reduce((a, b) => a + b, 0) / rec.length);
+  const streak = LS.streak.get().count;
 
   el.innerHTML = `
     <div class="big-stat"><div class="bsv">${best}</div><div class="bsl">Best WPM</div><div class="bss">All-time record</div></div>
@@ -97,7 +99,8 @@ function renderStats() {
     <div class="big-stat"><div class="bsv">${bAcc}%</div><div class="bsl">Best Acc</div><div class="bss">Personal best</div></div>
     <div class="big-stat"><div class="bsv">${aAcc}%</div><div class="bsl">Avg Acc</div><div class="bss">Overall</div></div>
     <div class="big-stat"><div class="bsv">${h.length}</div><div class="bsl">Sessions</div><div class="bss">Total practice</div></div>
-    <div class="big-stat"><div class="bsv">${rAvg}</div><div class="bsl">Recent</div><div class="bss">Last 10 avg WPM</div></div>`;
+    <div class="big-stat"><div class="bsv">${rAvg}</div><div class="bsl">Recent</div><div class="bss">Last 10 avg WPM</div></div>
+    <div class="big-stat streak-stat"><div class="bsv">${streak}🔥</div><div class="bsl">Day Streak</div><div class="bss">Consecutive days</div></div>`;
 
   const rev30 = h.slice(0, 30).reverse();
   drawChart("wpmChart", rev30.map((_, i) => i + 1), rev30.map(x => x.wpm), "#a78bfa");
@@ -106,7 +109,7 @@ function renderStats() {
   document.getElementById("histBody").innerHTML = `
     <table class="hist-table">
       <thead>
-        <tr><th>#</th><th>WPM</th><th>Acc</th><th>Lang</th><th>Diff</th><th>Date</th></tr>
+        <tr><th>#</th><th>WPM</th><th>Acc</th><th>Lang</th><th>Diff</th><th>Mode</th><th>Date</th></tr>
       </thead>
       <tbody>
         ${h.slice(0, 20).map((x, i) => `
@@ -116,6 +119,7 @@ function renderStats() {
             <td>${x.acc}%</td>
             <td><span class="pill pill-${x.lang}">${LANG_SHORT[x.lang] || x.lang}</span></td>
             <td><span class="pill pill-${x.diff}">${x.diff}</span></td>
+            <td><span class="pill">${x.mode || "—"}</span></td>
             <td style="color:var(--text3);font-size:11px">${new Date(x.ts).toLocaleDateString()}</td>
           </tr>`).join("")}
       </tbody>

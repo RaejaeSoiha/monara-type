@@ -1,6 +1,6 @@
 /* ============================================================
    RACE.JS — Multiplayer race mode engine
-   TypeCraft v2
+   Monara Type v2
    Depends on: data.js, audio.js
 ============================================================ */
 
@@ -8,11 +8,11 @@
    RACE STATE
 ---------------------------------------------------------- */
 const R = {
-  lang:"en", diff:"easy", bots:2,
+  lang:"en", diff:"easy", bots:2, time:120,
   text:"", chars:[], cursor:0,
   started:false, finished:false,
-  timer:null, remaining:120, t0:null,
-  correct:0, keys:0,
+  timer:null, countdown:null, remaining:120, t0:null,
+  correct:0, wrong:0, keys:0,
   players:[],     // {name,color,emoji,progress,wpm,isUser,finished,finishTime}
   botIntervals:[],
   raceLen:0
@@ -21,22 +21,39 @@ const R = {
 /* ----------------------------------------------------------
    SETUP SCREEN
 ---------------------------------------------------------- */
+/* Clear all race timers/intervals (timer, countdown, bot AI) */
+function clearRaceTimers() {
+  if (R.timer)     { clearInterval(R.timer);     R.timer = null; }
+  if (R.countdown) { clearInterval(R.countdown); R.countdown = null; }
+  R.botIntervals.forEach(clearInterval);
+  R.botIntervals = [];
+}
+
+/* Abort an in-flight race and reset its session flags */
+function stopRace() {
+  clearRaceTimers();
+  R.started  = false;
+  R.finished = false;
+  R.t0       = null;
+}
+
 function setupRace() {
+  stopRace();
   document.getElementById("raceSetup").style.display  = "block";
   document.getElementById("raceGame").style.display   = "none";
   document.getElementById("raceResult").classList.remove("show");
-  R.bots = 2; R.lang = "en"; R.diff = "easy";
   renderPlayerCards();
 
-  // Reset pill highlights
+  // Reset pill highlights to the current race settings
   const reset = (grp, attr, val) =>
     document.querySelectorAll(`#${grp} .pill-btn`).forEach(b => {
       b.classList.remove("active");
-      if (b.dataset[attr] === val) b.classList.add("active");
+      if (String(b.dataset[attr]) === String(val)) b.classList.add("active");
     });
-  reset("raceBotGrp",  "bots",  "2");
-  reset("raceLangGrp", "rlang", "en");
-  reset("raceDiffGrp", "rdiff", "easy");
+  reset("raceBotGrp",  "bots",  R.bots);
+  reset("raceLangGrp", "rlang", R.lang);
+  reset("raceDiffGrp", "rdiff", R.diff);
+  reset("raceTimeGrp", "rtime", R.time);
 }
 
 function renderPlayerCards() {
@@ -66,26 +83,30 @@ function renderPlayerCards() {
   bind("raceLangGrp", "rlang", v => { R.lang = v; renderPlayerCards(); });
   bind("raceDiffGrp", "rdiff", v => { R.diff = v; });
   bind("raceBotGrp",  "bots",  v => { R.bots = parseInt(v); renderPlayerCards(); });
+  bind("raceTimeGrp", "rtime", v => { R.time = parseInt(v); });
 })();
 
 /* ----------------------------------------------------------
    START RACE
 ---------------------------------------------------------- */
 function startRace() {
+  // Mon corpus is lazy-loaded: ensure it's available before racing in Mon
+  if (R.lang === "mon" && !monDataLoaded()) {
+    loadMonData(() => startRace());
+    return;
+  }
   // Clean up previous race
-  if (R.timer) clearInterval(R.timer);
-  R.botIntervals.forEach(clearInterval);
-  R.botIntervals = [];
+  clearRaceTimers();
 
-  const t    = getText(R.lang, R.diff, "sentences");
+  const t    = getText(R.lang, R.diff, "sentences", sentencesForTime(R.time));
   R.text     = t;
   R.chars    = [...t].map(ch => ({ ch, ok: null }));
   R.cursor   = 0;
   R.started  = false;
   R.finished = false;
-  R.remaining = 120;
+  R.remaining = R.time;
   R.t0       = null;
-  R.correct  = R.keys = 0;
+  R.correct  = R.wrong = R.keys = 0;
   R.raceLen  = [...t].length;
 
   // Build player list with bot speeds
@@ -108,9 +129,19 @@ function startRace() {
 
   renderRaceTrack();
   renderRaceText();
+  const tInit = document.getElementById("raceTimeCount");
+  if (tInit) tInit.textContent = R.time;
   document.getElementById("raceInput").value     = "";
   document.getElementById("raceInput").className = "typing-input"
     + (R.lang !== "en" ? " mm-font" : "");
+
+  // Mon keyboard toggle only in Mon mode
+  const kbdBtn = document.getElementById("raceMonKbdBtn");
+  if (kbdBtn) kbdBtn.style.display = R.lang === "mon" ? "inline-flex" : "none";
+  if (R.lang !== "mon") {
+    const kbd = document.getElementById("raceMonKbd");
+    if (kbd && kbd.classList.contains("open")) kbd.classList.remove("open");
+  }
 
   // Countdown 3-2-1-GO
   let cnt = 3;
@@ -124,6 +155,7 @@ function startRace() {
       document.getElementById("countNum").textContent = cnt;
     } else {
       clearInterval(ci);
+      R.countdown = null;
       document.getElementById("countNum").textContent = "GO!";
       setTimeout(() => cd.classList.remove("show"), 500);
       playRaceStart();
@@ -132,6 +164,7 @@ function startRace() {
       startRaceTimer();
     }
   }, 1000);
+  R.countdown = ci;
 }
 
 /* ----------------------------------------------------------
@@ -165,7 +198,7 @@ function updateRaceTrack() {
   const rf = document.getElementById("raceTimeFill");
   const rc = document.getElementById("raceTimeCount");
   if (td) td.textContent = R.remaining + "s";
-  if (rf) rf.style.width = (R.remaining / 120 * 100) + "%";
+  if (rf) rf.style.width = (R.remaining / R.time * 100) + "%";
   if (rc) rc.textContent = R.remaining;
 }
 
@@ -178,6 +211,7 @@ function renderRaceText() {
     else if (i === R.cursor) cls += " cursor";
     return `<span class="${cls}">${c.ch === " " ? "&nbsp;" : esc(c.ch)}</span>`;
   }).join("");
+  scrollCursorIntoView(el);
 }
 
 /* ----------------------------------------------------------
@@ -185,7 +219,7 @@ function renderRaceText() {
 ---------------------------------------------------------- */
 function startRaceBots() {
   R.players.filter(p => !p.isUser).forEach(p => {
-    const charsPerSec = p.speed / 60 * 5;
+    const charsPerSec = p.speed / 60 * LANG_WORD_LEN[R.lang];
     let charsDone = 0;
     const iv = setInterval(() => {
       if (p.finished || R.finished) return;
@@ -193,7 +227,7 @@ function startRaceBots() {
       charsDone = Math.min(R.raceLen, charsDone + charsPerSec + jitter);
       p.progress = (charsDone / R.raceLen) * 100;
       const elapsed = R.t0 ? (Date.now() - R.t0) / 60000 : 0.001;
-      p.wpm = elapsed > 0 ? Math.round((charsDone / 5) / elapsed) : 0;
+      p.wpm = elapsed > 0 ? Math.round((charsDone / LANG_WORD_LEN[R.lang]) / elapsed) : 0;
       if (charsDone >= R.raceLen && !p.finished) {
         p.finished    = true;
         p.finishTime  = R.t0 ? ((Date.now() - R.t0) / 1000).toFixed(1) : null;
@@ -210,8 +244,13 @@ function startRaceBots() {
    RACE TIMER
 ---------------------------------------------------------- */
 function startRaceTimer() {
+  R.remaining = R.time;
+  resumeRaceTimer();
+}
+
+/* Resume the race countdown (preserves remaining time) */
+function resumeRaceTimer() {
   if (R.timer) clearInterval(R.timer);
-  R.remaining = 120;
   R.timer = setInterval(() => {
     R.remaining--;
     updateRaceTrack();
@@ -235,13 +274,13 @@ document.getElementById("raceInput").addEventListener("input", function() {
   R.chars[i].ok = ok;
   R.cursor = val.length;
   R.keys++;
-  if (ok) R.correct++;
+  if (ok) R.correct++; else R.wrong++;
   playTick(ok);
 
   const pct = (R.cursor / R.raceLen) * 100;
   R.players[0].progress = pct;
   const el = (Date.now() - R.t0) / 60000;
-  R.players[0].wpm = el > 0 ? Math.round((R.correct / 5) / el) : 0;
+  R.players[0].wpm = el > 0 ? Math.round((R.correct / LANG_WORD_LEN[R.lang]) / el) : 0;
 
   updateRaceTrack();
   renderRaceText();
@@ -253,12 +292,27 @@ document.getElementById("raceInput").addEventListener("input", function() {
   }
 });
 
+document.getElementById("raceInput").addEventListener("keydown", function(e) {
+  if (e.key === "Backspace") {
+    const nl = Math.max(0, this.value.length - 1);
+    if (nl < R.cursor && R.chars[nl]) {
+      const prev = R.chars[nl].ok;
+      if (prev === true)      R.correct = Math.max(0, R.correct - 1);
+      else if (prev === false) R.wrong  = Math.max(0, R.wrong - 1);
+      R.chars[nl].ok = null;
+      R.cursor = nl;
+      renderRaceText();
+      updateRaceTrack();
+    }
+  }
+  if (e.key === "Tab") { e.preventDefault(); startRace(); }
+});
+
 /* ----------------------------------------------------------
    FINISH RACE
 ---------------------------------------------------------- */
 function finishRace() {
-  if (R.timer) clearInterval(R.timer);
-  R.botIntervals.forEach(clearInterval);
+  clearRaceTimers();
   R.finished = true;
   R.players.forEach(p => { if (!p.finishTime) p.finishTime = null; });
   playFinish();
@@ -269,6 +323,22 @@ function showRaceResult() {
   document.getElementById("raceGame").style.display = "none";
   const rr = document.getElementById("raceResult");
   rr.classList.add("show");
+
+  // Record the user's result so it can be saved to the leaderboard,
+  // and auto-log it to session history (stats).
+  const u         = R.players[0];
+  const total     = R.correct + R.wrong;
+  const acc       = total > 0 ? Math.round((R.correct / total) * 100) : 100;
+  const elapsedMn = R.t0 ? (Date.now() - R.t0) / 60000 : 0;
+  const raw       = elapsedMn > 0 ? Math.round((R.keys / LANG_WORD_LEN[R.lang]) / elapsedMn) : 0;
+  const fwpm      = Math.round(u.wpm);
+  if (R.keys > 0) {
+    P.lastResult = { wpm: fwpm, raw, acc, correct: R.correct, lang: R.lang, diff: R.diff, time: R.time, mode: "race" };
+    LS.addH({ wpm: fwpm, raw, acc, lang: R.lang, diff: R.diff, mode: "race" });
+    LS.recordStreak();
+  }
+  const raceSaveBtn = document.getElementById("raceSaveBtn");
+  if (raceSaveBtn) { raceSaveBtn.disabled = R.keys === 0; raceSaveBtn.textContent = "💾 Save Score"; }
 
   const sorted = [...R.players].sort((a, b) => {
     if (a.finished && !b.finished) return -1;
