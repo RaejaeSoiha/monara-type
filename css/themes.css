@@ -1,0 +1,177 @@
+/* ============================================================
+   THEMES — TypeCraft v2
+   Each theme overrides the CSS custom properties on :root.
+   Applied via a class on <body>: e.g. <body class="theme-ocean">
+============================================================ */
+
+/* ---- DARK PURPLE (default, no class needed) ---- */
+/* Already defined in :root inside style.css */
+
+/* ---- MIDNIGHT (deep blue) ---- */
+body.theme-midnight {
+  --bg:      #040812;
+  --bg2:     #080f1e;
+  --bg3:     #0d1526;
+  --bg4:     #131e30;
+  --bg5:     #1a2840;
+  --border:  rgba(99,179,237,0.06);
+  --border2: rgba(99,179,237,0.12);
+  --border3: rgba(99,179,237,0.20);
+  --text:    #e0eeff;
+  --text2:   #7da8cc;
+  --text3:   #3a5a7a;
+  --text4:   #1e3a50;
+
+  --p:       #60a5fa;
+  --p2:      #2563eb;
+  --p3:      #1d4ed8;
+  --pglow:   rgba(96,165,250,0.22);
+  --pglow2:  rgba(96,165,250,0.08);
+
+  --green:   #34d399;
+  --cyan:    #22d3ee;
+}
+
+/* ---- FOREST (dark green) ---- */
+body.theme-forest {
+  --bg:      #050d0a;
+  --bg2:     #091410;
+  --bg3:     #0d1c17;
+  --bg4:     #12251e;
+  --bg5:     #182e25;
+  --border:  rgba(74,222,128,0.06);
+  --border2: rgba(74,222,128,0.11);
+  --border3: rgba(74,222,128,0.18);
+  --text:    #e0ffe8;
+  --text2:   #6db889;
+  --text3:   #2e6645;
+  --text4:   #163323;
+
+  --p:       #4ade80;
+  --p2:      #16a34a;
+  --p3:      #15803d;
+  --pglow:   rgba(74,222,128,0.22);
+  --pglow2:  rgba(74,222,128,0.08);
+
+  --cyan:    #34d399;
+}
+
+/* ---- SUNSET (warm orange/amber) ---- */
+body.theme-sunset {
+  --bg:      #0f0a04;
+  --bg2:     #1a1008;
+  --bg3:     #241808;
+  --bg4:     #2e2010;
+  --bg5:     #3a2a14;
+  --border:  rgba(251,191,36,0.06);
+  --border2: rgba(251,191,36,0.12);
+  --border3: rgba(251,191,36,0.20);
+  --text:    #fff8e0;
+  --text2:   #c0962a;
+  --text3:   #6a4d10;
+  --text4:   #3a2a06;
+
+  --p:       #fbbf24;
+  --p2:      #d97706;
+  --p3:      #b45309;
+  --pglow:   rgba(251,191,36,0.22);
+  --pglow2:  rgba(251,191,36,0.08);
+
+  --green:   #4ade80;
+  --cyan:    #38bdf8;
+  --pink:    #f472b6;
+}
+
+/* ---- ROSE (pink/magenta) ---- */
+body.theme-rose {
+  --bg:      #0f0508;
+  --bg2:     #1a0810;
+  --bg3:     #240d18;
+  --bg4:     #2e1220;
+  --bg5:     #3a1828;
+  --border:  rgba(244,114,182,0.06);
+  --border2: rgba(244,114,182,0.12);
+  --border3: rgba(244,114,182,0.20);
+  --text:    #ffe0ec;
+  --text2:   #c06080;
+  --text3:   #6a2840;
+  --text4:   #3a1220;
+
+  --p:       #f472b6;
+  --p2:      #db2777;
+  --p3:      #be185d;
+  --pglow:   rgba(244,114,182,0.22);
+  --pglow2:  rgba(244,114,182,0.08);
+
+  --green:   #4ade80;
+  --cyan:    #22d3ee;
+}
+
+/* ---- LIGHT (clean white) ---- */
+body.theme-light {
+  --bg:      #f5f5f8;
+  --bg2:     #ffffff;
+  --bg3:     #eeeef5;
+  --bg4:     #e0e0ee;
+  --bg5:     #d0d0e0;
+  --border:  rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.12);
+  --border3: rgba(0,0,0,0.20);
+  --text:    #1a1a2e;
+  --text2:   #4a4a6a;
+  --text3:   #9090b0;
+  --text4:   #c0c0d8;
+
+  --p:       #7c3aed;
+  --p2:      #6d28d9;
+  --p3:      #5b21b6;
+  --pglow:   rgba(124,58,237,0.18);
+  --pglow2:  rgba(124,58,237,0.08);
+
+  --green:   #16a34a;
+  --red:     #dc2626;
+  --amber:   #d97706;
+  --cyan:    #0891b2;
+}
+body.theme-light::before {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,58,237,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(124,58,237,0.04) 0%, transparent 55%);
+}
+body.theme-light .char { color: var(--text4); }
+body.theme-light .char.correct { color: var(--green); }
+body.theme-light .char.wrong   { color: var(--red); }
+body.theme-light .char.cursor  { color: #fff; background: var(--p); }
+body.theme-light .mob-nav { background: rgba(240,240,250,0.95); }
+
+/* ---- HACKER (terminal green on black) ---- */
+body.theme-hacker {
+  --bg:      #000000;
+  --bg2:     #050f05;
+  --bg3:     #0a180a;
+  --bg4:     #0f200f;
+  --bg5:     #152815;
+  --border:  rgba(0,255,65,0.06);
+  --border2: rgba(0,255,65,0.12);
+  --border3: rgba(0,255,65,0.22);
+  --text:    #00ff41;
+  --text2:   #00aa2a;
+  --text3:   #005515;
+  --text4:   #002a0a;
+
+  --p:       #00ff41;
+  --p2:      #00bb30;
+  --p3:      #008820;
+  --pglow:   rgba(0,255,65,0.20);
+  --pglow2:  rgba(0,255,65,0.07);
+
+  --green:   #00ff41;
+  --red:     #ff4444;
+  --amber:   #ffbb00;
+  --cyan:    #00ffff;
+  --pink:    #ff66ff;
+
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'JetBrains Mono', 'Courier New', monospace;
+}
+body.theme-hacker .char { color: #003a10; }

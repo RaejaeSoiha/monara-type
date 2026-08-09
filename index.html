@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TypeCraft v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Myanmar:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ════════════════════════════════════
+       HEADER
+  ═════════════════════════════════════════ -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">⌨</div>
+      <div>
+        <div class="logo-text">Type<span>Craft</span> <span class="logo-v">v2</span></div>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="gotoView('typing')">⌨ Practice</button>
+      <button class="nav-tab" onclick="gotoView('race')">🏎 Race</button>
+      <button class="nav-tab" onclick="gotoView('leaderboard')">🏆 Board</button>
+      <button class="nav-tab" onclick="gotoView('stats')">📊 Stats</button>
+    </div>
+
+    <button class="theme-btn" onclick="openThemePanel()">🎨 Theme</button>
+  </header>
+
+  <!-- ════════════════════════════════════
+       PRACTICE VIEW
+  ═════════════════════════════════════════ -->
+  <div class="view active" id="view-typing">
+
+    <!-- Controls -->
+    <div class="controls-row">
+      <div class="pill-group" id="langGrp">
+        <button class="pill-btn active" data-lang="en">EN</button>
+        <button class="pill-btn" data-lang="mm">မြန်မာ</button>
+        <button class="pill-btn" data-lang="mon">Mon</button>
+      </div>
+      <div class="pill-group" id="modeGrp">
+        <button class="pill-btn active" data-mode="words">Words</button>
+        <button class="pill-btn" data-mode="sentences">Sentences</button>
+        <button class="pill-btn" data-mode="quotes">Quotes</button>
+        <button class="pill-btn" data-mode="custom">Custom</button>
+      </div>
+      <div class="pill-group" id="timeGrp">
+        <button class="pill-btn" data-time="15">15s</button>
+        <button class="pill-btn active" data-time="30">30s</button>
+        <button class="pill-btn" data-time="60">60s</button>
+        <button class="pill-btn" data-time="120">2m</button>
+      </div>
+      <div class="pill-group" id="diffGrp">
+        <button class="pill-btn active" data-diff="easy">Easy</button>
+        <button class="pill-btn" data-diff="medium">Med</button>
+        <button class="pill-btn" data-diff="hard">Hard</button>
+      </div>
+      <div class="pill-group" id="hlGrp">
+        <button class="pill-btn active" data-hl="char">Char</button>
+        <button class="pill-btn" data-hl="word">Word</button>
+      </div>
+      <button class="sound-btn" id="soundBtn" onclick="toggleSound()">🔇 Sound</button>
+    </div>
+
+    <!-- Live stats bar -->
+    <div class="stats-row">
+      <div class="stat-card" id="sc-wpm"><div class="stat-val" id="wpmD">0</div><div class="stat-label">WPM</div></div>
+      <div class="stat-card" id="sc-raw"><div class="stat-val" id="rawD">0</div><div class="stat-label">Raw</div></div>
+      <div class="stat-card" id="sc-acc"><div class="stat-val" id="accD">100%</div><div class="stat-label">Acc</div></div>
+      <div class="stat-card" id="sc-str"><div class="stat-val" id="strD">0</div><div class="stat-label">Streak</div></div>
+      <div class="stat-card" id="sc-chr"><div class="stat-val" id="chrD">0</div><div class="stat-label">Correct</div></div>
+    </div>
+
+    <!-- Typing card -->
+    <div class="typing-card" id="mainCard">
+      <div class="time-bar">
+        <div class="progress-track"><div class="progress-fill" id="timeFill" style="width:100%"></div></div>
+        <div class="time-count" id="timeD">30</div>
+      </div>
+      <div id="langBadge" class="lang-badge lb-en">🇺🇸 English</div>
+      <div class="text-display" id="textDisplay"></div>
+      <textarea class="typing-input" id="typingInput" rows="1"
+        placeholder="Start typing…"
+        autocomplete="off" autocorrect="off" autocapitalize="off"
+        spellcheck="false" inputmode="text"></textarea>
+      <div class="mobile-keys" id="mobileKeys">
+        <button class="mk-btn" onclick="mobileInsert(' ')">Space</button>
+        <button class="mk-btn" onclick="mobileBackspace()">⌫</button>
+        <button class="mk-btn" onclick="restartTest()">↺</button>
+      </div>
+      <div class="diff-hint" id="diffHint">Easy · Common everyday words</div>
+    </div>
+
+    <!-- Result screen -->
+    <div class="result-screen" id="resultScreen">
+      <div class="result-trophy" id="rTrophy">🏆</div>
+      <div class="result-title" id="rTitle">Session Complete!</div>
+      <div class="result-sub"   id="rSub"></div>
+      <div class="result-grid">
+        <div class="result-stat">
+          <div class="result-stat-val" id="rWpm">0</div>
+          <div class="result-stat-label">WPM</div>
+          <div class="result-bar"><div class="result-bar-fill" id="rWpmBar"></div></div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-val" id="rAcc">0%</div>
+          <div class="result-stat-label">Accuracy</div>
+          <div class="result-bar"><div class="result-bar-fill" id="rAccBar"></div></div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-val" id="rRaw">0</div>
+          <div class="result-stat-label">Raw WPM</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-val" id="rChars">0</div>
+          <div class="result-stat-label">Chars</div>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn primary" onclick="restartTest()">↺ Restart</button>
+        <button class="btn" onclick="newText()">New Text</button>
+        <button class="btn" id="saveBtn" onclick="openSaveModal()">💾 Save Score</button>
+      </div>
+    </div>
+
+    <!-- Bottom action row (during typing) -->
+    <div class="action-row" id="actionRow">
+      <button class="btn primary" onclick="restartTest()">↺ Restart</button>
+      <button class="btn" onclick="newText()">New Text</button>
+    </div>
+
+  </div><!-- /view-typing -->
+
+  <!-- ════════════════════════════════════
+       RACE VIEW
+  ═════════════════════════════════════════ -->
+  <div class="view" id="view-race">
+
+    <!-- Setup screen -->
+    <div class="race-setup" id="raceSetup">
+      <h2>🏎 Multiplayer Race</h2>
+      <p>Race against AI opponents. Type the passage fastest to win!</p>
+      <div class="race-players" id="racePlayerList"></div>
+      <div class="controls-row" style="margin-bottom:20px">
+        <div class="pill-group" id="raceLangGrp">
+          <button class="pill-btn active" data-rlang="en">EN</button>
+          <button class="pill-btn" data-rlang="mm">မြန်မာ</button>
+          <button class="pill-btn" data-rlang="mon">Mon</button>
+        </div>
+        <div class="pill-group" id="raceDiffGrp">
+          <button class="pill-btn active" data-rdiff="easy">Easy</button>
+          <button class="pill-btn" data-rdiff="medium">Med</button>
+          <button class="pill-btn" data-rdiff="hard">Hard</button>
+        </div>
+        <div class="pill-group" id="raceBotGrp">
+          <button class="pill-btn" data-bots="1">1 Bot</button>
+          <button class="pill-btn active" data-bots="2">2 Bots</button>
+          <button class="pill-btn" data-bots="3">3 Bots</button>
+        </div>
+      </div>
+      <button class="btn primary" onclick="startRace()" style="font-size:15px;padding:13px 36px;">Start Race 🏁</button>
+    </div>
+
+    <!-- Live race game -->
+    <div id="raceGame" style="display:none">
+      <div class="race-track-container">
+        <div class="race-track-title">
+          <span>🏁 Race Track</span>
+          <span id="raceTimeD" style="color:var(--p);font-weight:700">—</span>
+        </div>
+        <div class="race-track" id="raceTrack"></div>
+      </div>
+
+      <div class="typing-card" id="raceTypingCard">
+        <div class="time-bar">
+          <div class="progress-track"><div class="progress-fill" id="raceTimeFill" style="width:100%"></div></div>
+          <div class="time-count" id="raceTimeCount">120</div>
+        </div>
+        <div class="text-display" id="raceTextDisplay"></div>
+        <textarea class="typing-input" id="raceInput" rows="1"
+          placeholder="Type here to race…"
+          autocomplete="off" autocorrect="off" autocapitalize="off"
+          spellcheck="false"></textarea>
+        <div class="mobile-keys">
+          <button class="mk-btn" onclick="mobileInsert(' ', true)">Space</button>
+          <button class="mk-btn" onclick="mobileBackspace(true)">⌫</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Race result -->
+    <div class="race-result" id="raceResult">
+      <div class="result-trophy" id="raceTrophy">🏆</div>
+      <div class="result-title"  id="raceResultTitle">Race Over!</div>
+      <div class="race-podium"   id="racePodium"></div>
+      <div class="action-row" style="margin-top:20px">
+        <button class="btn primary" onclick="setupRace()">Race Again 🏎</button>
+        <button class="btn" onclick="gotoView('typing')">Practice Mode</button>
+      </div>
+    </div>
+
+  </div><!-- /view-race -->
+
+  <!-- ════════════════════════════════════
+       LEADERBOARD VIEW
+  ═════════════════════════════════════════ -->
+  <div class="view" id="view-leaderboard">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:10px;flex-wrap:wrap">
+      <div class="section-header" style="margin:0">
+        <div class="section-title">🏆 Leaderboard</div>
+        <div class="section-sub">Top scores — all sessions</div>
+      </div>
+      <button class="btn" onclick="clearLB()" style="font-size:11px;padding:6px 14px">Clear All</button>
+    </div>
+    <div class="lb-filters">
+      <button class="lb-filter active" onclick="filterLB(this,'all')">All</button>
+      <button class="lb-filter" onclick="filterLB(this,'en')">English</button>
+      <button class="lb-filter" onclick="filterLB(this,'mm')">Burmese</button>
+      <button class="lb-filter" onclick="filterLB(this,'mon')">Mon</button>
+      <button class="lb-filter" onclick="filterLB(this,'easy')">Easy</button>
+      <button class="lb-filter" onclick="filterLB(this,'medium')">Medium</button>
+      <button class="lb-filter" onclick="filterLB(this,'hard')">Hard</button>
+    </div>
+    <div id="lbBody"></div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       STATS VIEW
+  ═════════════════════════════════════════ -->
+  <div class="view" id="view-stats">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:10px;flex-wrap:wrap">
+      <div class="section-header" style="margin:0">
+        <div class="section-title">📊 My Statistics</div>
+        <div class="section-sub">Personal progress over time</div>
+      </div>
+      <button class="btn" onclick="clearHist()" style="font-size:11px;padding:6px 14px">Clear</button>
+    </div>
+    <div class="stats-overview" id="statsOverview"></div>
+    <div class="chart-card">
+      <div class="chart-title">WPM Over Time (last 30 sessions)</div>
+      <div class="chart-area"><canvas id="wpmChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Accuracy Over Time (last 30 sessions)</div>
+      <div class="chart-area"><canvas id="accChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Recent Sessions</div>
+      <div id="histBody"></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ════════════════════════════════════
+     MOBILE BOTTOM NAV
+═════════════════════════════════════════ -->
+<div class="mob-nav">
+  <button class="nav-tab active" onclick="gotoView('typing')">⌨ Practice</button>
+  <button class="nav-tab" onclick="gotoView('race')">🏎 Race</button>
+  <button class="nav-tab" onclick="gotoView('leaderboard')">🏆 Board</button>
+  <button class="nav-tab" onclick="gotoView('stats')">📊 Stats</button>
+</div>
+
+<!-- ════════════════════════════════════
+     SAVE SCORE MODAL
+═════════════════════════════════════════ -->
+<div class="modal-bg" id="saveModal">
+  <div class="modal">
+    <div style="font-size:40px;margin-bottom:10px">🏆</div>
+    <div class="modal-title">Save Your Score</div>
+    <div class="modal-sub" id="modalInfo">Enter your name for the leaderboard</div>
+    <input class="modal-input" id="nameInput" placeholder="Your name…" maxlength="20">
+    <div class="modal-row">
+      <button class="btn" onclick="closeModal('saveModal')">Cancel</button>
+      <button class="btn primary" onclick="confirmSave()">Save 💾</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     RACE COUNTDOWN OVERLAY
+═════════════════════════════════════════ -->
+<div class="countdown-overlay" id="countdown">
+  <div class="countdown-num" id="countNum">3</div>
+  <div class="countdown-text">Get ready…</div>
+</div>
+
+<!-- ════════════════════════════════════
+     THEME PICKER PANEL
+═════════════════════════════════════════ -->
+<div class="theme-panel" id="themePanel">
+  <div class="theme-box">
+    <h3>🎨 Choose Theme</h3>
+    <p>Pick a color theme. Your choice is saved automatically.</p>
+    <div class="theme-grid" id="themeGrid"></div>
+    <div style="text-align:center">
+      <button class="btn" onclick="closeThemePanel()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCRIPTS (load order matters)
+     data → storage → audio → practice → race → stats → app
+═════════════════════════════════════════ -->
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/practice.js"></script>
+<script src="js/race.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
