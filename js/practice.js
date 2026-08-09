@@ -20,7 +20,7 @@ const P = {
    RENDERING
 ---------------------------------------------------------- */
 function renderTyping() {
-  if (P.hl === "word") { renderWordMode(); return; }
+  if (P.hl === "word") { renderWordMode(); updateWordMean(); return; }
   const el = document.getElementById("textDisplay");
   el.className = "text-display" + (P.lang !== "en" ? " mm-font" : "");
   el.innerHTML = P.chars.map((c, i) => {
@@ -29,6 +29,7 @@ function renderTyping() {
     else if (i === P.cursor) cls += " cursor";
     return `<span class="${cls}">${c.ch === " " ? "&nbsp;" : esc(c.ch)}</span>`;
   }).join("");
+  updateWordMean();
 }
 
 function renderWordMode() {
@@ -59,6 +60,32 @@ function renderWordMode() {
     return `<span class="${cls}">${spanChars}</span>`;
   }).join(`<span class="word-space">&nbsp;</span>`);
   el.innerHTML = html;
+}
+
+/* Show the English gloss of the word currently being typed (Mon words mode).
+   Uses MON_GLOSS from data-mon.js (Mon Wiktionary glosses). */
+function updateWordMean() {
+  const el = document.getElementById("wordMean");
+  if (!el) return;
+  if (P.lang !== "mon" || P.mode !== "words" || !P.text) {
+    el.textContent = "";
+    el.style.display = "none";
+    return;
+  }
+  let idx = 0, cur = "";
+  for (const word of P.text.split(" ")) {
+    const end = idx + word.length;
+    if (P.cursor >= idx && P.cursor <= end) { cur = word; break; }
+    idx = end + 1;
+  }
+  const g = MON_GLOSS && MON_GLOSS[cur];
+  if (g) {
+    el.textContent = cur + " — " + g;
+    el.style.display = "block";
+  } else {
+    el.textContent = "";
+    el.style.display = "none";
+  }
 }
 
 /* ----------------------------------------------------------
@@ -173,6 +200,14 @@ function initTest(keepText) {
   badge.className   = "lang-badge lb-" + P.lang;
   badge.textContent = LANG_NAMES[P.lang];
 
+  // Mon keyboard toggle only in Mon mode
+  const kbdBtn = document.getElementById("monKbdBtn");
+  if (kbdBtn) kbdBtn.style.display = P.lang === "mon" ? "inline-flex" : "none";
+  if (P.lang !== "mon") {
+    const kbd = document.getElementById("monKbd");
+    if (kbd && kbd.classList.contains("open")) { kbd.classList.remove("open"); kbdBtn.classList.remove("on"); }
+  }
+
   const diffIdx = ["easy","medium","hard"].indexOf(P.diff);
   const hints   = ["Easy · Common words", "Medium · Extended vocabulary", "Hard · Complex text"];
   document.getElementById("diffHint").textContent = (hints[diffIdx] || hints[0]) + " · " + P.mode;
@@ -275,6 +310,52 @@ setupPillGroup("modeGrp", "mode", v => {
 });
 
 /* ----------------------------------------------------------
+   MON VIRTUAL KEYBOARD
+   Mon script needs a dedicated input layout, so we provide an
+   on-screen reference keyboard that inserts characters directly
+   into the typing input. Shown only in Mon language mode.
+---------------------------------------------------------- */
+const MON_KBD = {
+  label: "Mon Alphabet",
+  rows: [
+    { name: "Consonants",
+      keys: ["က","ခ","ဂ","ဃ","ၚ","စ","ဆ","ဇ","ၛ","ဉ","ည","ဋ","ဌ","ဍ","ဎ",
+             "တ","ထ","ဒ","ဓ","န","ပ","ဖ","ဗ","ဘ","မ","ယ","ရ","လ","ဝ","သ","ဟ","ၠ","အ"] },
+    { name: "Vowels & signs",
+      keys: ["ာ","ါ","ိ","ီ","ု","ူ","ဳ","ဴ","ဵ","ဲ","ံ","့","း","ျ","ြ","ွ","ှ","်"] },
+    { name: "Mon letters",
+      keys: ["ၜ","ၝ","ၞ","ၟ","ၠ","ၐ","ၑ","ဣ","ဥ","ဦ","ဨ"] },
+    { name: "Numbers & punctuation",
+      keys: ["၀","၁","၂","၃","၄","၅","၆","၇","၈","၉","၊","။","၎"," ",
+             { label: "⌫", cls: "mk-del", fn: "monDel" }] }
+  ]
+};
+
+function renderMonKbd() {
+  const el = document.getElementById("monKbd");
+  el.innerHTML = `<div class="mon-kbd-title">${MON_KBD.label} — click a key to type</div>` +
+    MON_KBD.rows.map(row => `
+      <div class="mon-kbd-row">
+        <span class="mon-kbd-group">${row.name}</span>
+        ${row.keys.map(k => {
+          if (typeof k === "string") return `<button class="mk" onclick="monKey('${k}')">${k === " " ? "␣" : k}</button>`;
+          return `<button class="mk ${k.cls || ""}" onclick="${k.fn}()">${k.label}</button>`;
+        }).join("")}
+      </div>`).join("");
+}
+
+function toggleMonKbd() {
+  const kbd  = document.getElementById("monKbd");
+  const btn  = document.getElementById("monKbdBtn");
+  const open = kbd.classList.toggle("open");
+  btn.classList.toggle("on", open);
+}
+
+function monKey(ch) { mobileInsert(ch); }
+
+function monDel()   { mobileBackspace(); }
+
+/* ----------------------------------------------------------
    MOBILE HELPERS
 ---------------------------------------------------------- */
 function mobileInsert(ch, race = false) {
@@ -322,3 +403,6 @@ function confirmSave() {
 
 document.getElementById("nameInput")
   .addEventListener("keydown", e => { if (e.key === "Enter") confirmSave(); });
+
+/* Render the Mon virtual keyboard once on load */
+renderMonKbd();

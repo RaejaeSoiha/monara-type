@@ -226,6 +226,14 @@ body::after {
 }
 .text-display.mm-font { font-family: var(--mm); font-size: 20px; line-height: 2.5; }
 
+/* ---- WORD MEANING (Mon gloss) ---- */
+.word-mean {
+  display: none;
+  font-family: var(--mm); font-size: 14px; line-height: 1.6;
+  color: var(--p); text-align: center; margin: -10px 0 14px;
+  min-height: 18px;
+}
+
 /* Characters */
 .char { color: var(--text3); transition: color 0.04s; }
 .char.correct { color: var(--green); }
@@ -278,6 +286,51 @@ body::after {
   -webkit-tap-highlight-color: transparent;
 }
 .mk-btn:active { background: var(--p2); color: #fff; transform: scale(0.95); }
+
+/* ---- MON VIRTUAL KEYBOARD ---- */
+.mon-kbd-btn.on {
+  background: rgba(167,139,250,0.14);
+  border-color: rgba(167,139,250,0.3);
+  color: var(--p);
+}
+.mon-kbd {
+  display: none;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--r3); padding: 18px 20px; margin-bottom: 16px;
+}
+.mon-kbd.open { display: block; animation: kbdIn 0.2s ease; }
+@keyframes kbdIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.mon-kbd-title {
+  font-family: var(--sans); font-size: 11px; color: var(--text3);
+  letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 12px;
+}
+.mon-kbd-row {
+  display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+}
+.mon-kbd-row:last-child { border-bottom: none; }
+.mon-kbd-group {
+  font-family: var(--sans); font-size: 9px; color: var(--text3);
+  min-width: 108px; letter-spacing: 0.4px; text-transform: uppercase;
+}
+.mk {
+  font-family: var(--mm); font-size: 16px; line-height: 1;
+  min-width: 36px; height: 38px; padding: 0 8px;
+  background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 8px; color: var(--text); cursor: pointer;
+  transition: all 0.1s; display: inline-flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.mk:hover { background: var(--bg5); border-color: var(--border3); }
+.mk:active { background: var(--p2); color: #fff; transform: scale(0.92); }
+.mk.mk-del {
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  background: rgba(248,113,113,0.12); color: var(--red); border-color: rgba(248,113,113,0.25);
+}
+@media (max-width: 640px) {
+  .mon-kbd-group { display: none; }
+  .mk { min-width: 40px; height: 42px; font-size: 18px; }
+}
 
 /* ============================================================
    ACTION ROW

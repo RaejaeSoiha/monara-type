@@ -68,6 +68,7 @@
         <button class="pill-btn" data-hl="word">Word</button>
       </div>
       <button class="sound-btn" id="soundBtn" onclick="toggleSound()">🔇 Sound</button>
+      <button class="sound-btn mon-kbd-btn" id="monKbdBtn" onclick="toggleMonKbd()" style="display:none">⌨ Mon</button>
     </div>
 
     <!-- Live stats bar -->
@@ -87,6 +88,7 @@
       </div>
       <div id="langBadge" class="lang-badge lb-en">🇺🇸 English</div>
       <div class="text-display" id="textDisplay"></div>
+      <div class="word-mean" id="wordMean"></div>
       <textarea class="typing-input" id="typingInput" rows="1"
         placeholder="Start typing…"
         autocomplete="off" autocorrect="off" autocapitalize="off"
@@ -98,6 +100,9 @@
       </div>
       <div class="diff-hint" id="diffHint">Easy · Common everyday words</div>
     </div>
+
+    <!-- Mon virtual keyboard (shown when Mon selected) -->
+    <div class="mon-kbd" id="monKbd"></div>
 
     <!-- Result screen -->
     <div class="result-screen" id="resultScreen">
@@ -310,8 +315,11 @@
 
 <!-- ════════════════════════════════════
      SCRIPTS (load order matters)
-     data → storage → audio → practice → race → stats → app
-═════════════════════════════════════════ -->
+     data-en/data-mm/data-mon → data → storage → audio → practice → race → stats → app
+════════════════════════════════════════ -->
+<script src="js/data-en.js"></script>
+<script src="js/data-mm.js"></script>
+<script src="js/data-mon.js"></script>
 <script src="js/data.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/audio.js"></script>
