@@ -133,7 +133,7 @@ function startRace() {
   if (tInit) tInit.textContent = R.time;
   document.getElementById("raceInput").value     = "";
   document.getElementById("raceInput").className = "typing-input"
-    + (R.lang !== "en" ? " mm-font" : "");
+    + scriptFontClass(R.lang);
 
   // Mon keyboard toggle only in Mon mode
   const kbdBtn = document.getElementById("raceMonKbdBtn");
@@ -204,7 +204,7 @@ function updateRaceTrack() {
 
 function renderRaceText() {
   const el = document.getElementById("raceTextDisplay");
-  el.className = "text-display" + (R.lang !== "en" ? " mm-font" : "");
+  el.className = "text-display" + scriptFontClass(R.lang);
   el.innerHTML = R.chars.map((c, i) => {
     let cls = "char";
     if (i < R.cursor)       cls += c.ok ? " correct" : " wrong";

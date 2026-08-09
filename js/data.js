@@ -46,6 +46,11 @@ function loadMonData(cb) {
 const LANG_NAMES = { en:"🇺🇸 English", mm:"🇲🇲 Burmese", mon:"Mon မန်" };
 const LANG_SHORT  = { en:"English", mm:"Burmese", mon:"Mon" };
 
+/* Font class for each script: Mon uses its own Unicode font stack. */
+function scriptFontClass(lang) {
+  return lang === "mon" ? " mon-font" : lang === "mm" ? " mm-font" : "";
+}
+
 /* Average characters-per-word for each language, measured from
    the actual text pools (pooled over difficulties & modes):
      en  ≈ 6.15   mm  ≈ 5.73   mon ≈ 11.30

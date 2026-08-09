@@ -39,6 +39,7 @@
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Outfit', sans-serif;
   --mm:   'Noto Sans Myanmar', 'Pyidaungsu', 'Myanmar Text', sans-serif;
+  --mon:  'Noto Sans Mon', 'Pyidaungsu', 'Noto Sans Myanmar', 'Myanmar Text', sans-serif;
   --r:    10px;
   --r2:   14px;
   --r3:   22px;
@@ -285,12 +286,14 @@ body::after {
   scrollbar-width: thin; scrollbar-color: var(--bg5) transparent;
   padding-right: 2px;
 }
-.text-display.mm-font { font-family: var(--mm); font-size: 21px; line-height: 2.5; }
+.text-display.mm-font, .text-display.mon-font { font-size: 21px; line-height: 2.5; }
+.text-display.mm-font  { font-family: var(--mm); }
+.text-display.mon-font { font-family: var(--mon); }
 
 /* ---- WORD MEANING (Mon gloss) ---- */
 .word-mean {
   display: none;
-  font-family: var(--mm); font-size: 14px; line-height: 1.6;
+  font-family: var(--mon); font-size: 14px; line-height: 1.6;
   color: var(--p); text-align: center; margin: -10px 0 14px;
   min-height: 18px;
 }
@@ -326,7 +329,8 @@ body::after {
   caret-color: var(--p);
   font-size: max(16px, 1em);
 }
-.typing-input.mm-font { font-family: var(--mm); }
+.typing-input.mm-font  { font-family: var(--mm); }
+.typing-input.mon-font { font-family: var(--mon); }
 .typing-input:focus { border-color: var(--p); box-shadow: 0 0 0 4px var(--pglow2), 0 0 24px var(--pglow2); }
 .typing-input::placeholder { color: var(--text3); }
 
@@ -427,7 +431,7 @@ body::after {
   min-width: 108px; letter-spacing: 0.4px; text-transform: uppercase;
 }
 .mk {
-  font-family: var(--mm); font-size: 16px; line-height: 1;
+  font-family: var(--mon); font-size: 16px; line-height: 1;
   min-width: 36px; height: 38px; padding: 0 8px;
   background: var(--bg4); border: 1px solid var(--border2);
   border-radius: 8px; color: var(--text); cursor: pointer;

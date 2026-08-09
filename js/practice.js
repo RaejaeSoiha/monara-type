@@ -23,7 +23,7 @@ const P = {
 function renderTyping() {
   if (P.hl === "word") { renderWordMode(); updateWordMean(); return; }
   const el = document.getElementById("textDisplay");
-  el.className = "text-display" + (P.lang !== "en" ? " mm-font" : "");
+  el.className = "text-display" + scriptFontClass(P.lang);
   el.innerHTML = P.chars.map((c, i) => {
     let cls = "char";
     if (i < P.cursor) cls += c.ok ? " correct" : " wrong";
@@ -36,7 +36,7 @@ function renderTyping() {
 
 function renderWordMode() {
   const el = document.getElementById("textDisplay");
-  el.className = "text-display" + (P.lang !== "en" ? " mm-font" : "");
+  el.className = "text-display" + scriptFontClass(P.lang);
   const words = P.text.split(" ");
   let charIdx = 0;
   const html = words.map(w => {
@@ -384,7 +384,7 @@ function initTest(keepText) {
 
   const inp = document.getElementById("typingInput");
   inp.value       = "";
-  inp.className   = "typing-input" + (P.lang !== "en" ? " mm-font" : "");
+  inp.className   = "typing-input" + scriptFontClass(P.lang);
   inp.placeholder = P.lang === "en" ? "Start typing…" : P.lang === "mon" ? "ချူညိ…" : "ရိုက်ပါ…";
 
   const badge = document.getElementById("langBadge");
