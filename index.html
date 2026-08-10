@@ -361,10 +361,14 @@
 <!-- ════════════════════════════════════
      SCRIPTS (load order matters)
      data-en/data-mm → data → storage → audio → practice → race → stats → app
+     Burmese pools are split by difficulty: data-mm → easy → medium → hard
      data-mon.js is LAZY-LOADED on demand (see data.js loadMonData)
 ════════════════════════════════════════ -->
 <script src="js/data-en.js"></script>
 <script src="js/data-mm.js"></script>
+<script src="js/data-mm-easy.js"></script>
+<script src="js/data-mm-medium.js"></script>
+<script src="js/data-mm-hard.js"></script>
 <script src="js/data.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/audio.js"></script>
