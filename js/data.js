@@ -53,14 +53,14 @@ function scriptFontClass(lang) {
 
 /* Average characters-per-word for each language, measured from
    the actual text pools (pooled over difficulties & modes):
-     en  ≈ 6.15   mm  ≈ 5.73   mon ≈ 11.30
+     en  ≈ 6.15   mm  ≈ 10.47   mon ≈ 11.30
    Standard typing WPM counts 5 chars/word (English convention).
    Normalizing by each language's real average word length keeps
    the leaderboard fair across languages: a Mon word (~11 chars)
    costs as much as it should, instead of being counted as 1
    "word" when only 5 chars have been typed.
    Values are rounded so the factors stay stable over time. */
-const LANG_WORD_LEN = { en: 5, mm: 6, mon: 11 };
+const LANG_WORD_LEN = { en: 5, mm: 10, mon: 11 };
 
 const BOT_NAMES  = ["Pixel","Nova","Zeta","Blaze","Kira"];
 const BOT_COLORS = ["var(--cyan)","var(--amber)","var(--pink)","var(--green)","var(--red)"];
