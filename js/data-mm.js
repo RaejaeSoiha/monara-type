@@ -2,10 +2,13 @@
    DATA-MM.JS — Burmese (မြန်မာ) text library
    Monara Type v2
    Structure: TXT_MM.mm[difficulty][mode] = string[]
-   Corpus mined from the full Burmese Wikipedia dump (mywiki
-   2026-08), filtered to Unicode Myanmar script (Zawgyi detected
-   & removed via myanmartools). Words = single space-delimited
-   tokens; sentences = clean Myanmar-only sentences.
+   Corpus mined from:
+   - full Burmese Wikipedia dump (mywiki 2026-08)
+   - Common Crawl CC100 my subcorpus (news/web register)
+   - HuggingFace kalixlouiis/burmese-text-corpus (curated)
+   Filtered to Unicode Myanmar script (Zawgyi detected & removed
+   via myanmartools). Words = single space-delimited tokens;
+   sentences = clean Myanmar-only sentences.
 ============================================================ */
 const TXT_MM = {
   mm:{
