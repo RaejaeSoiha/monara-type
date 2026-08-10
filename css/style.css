@@ -421,6 +421,10 @@ body::after {
   font-family: var(--sans); font-size: 11px; color: var(--text3);
   letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 12px;
 }
+.mon-kbd-hint {
+  font-family: var(--sans); font-size: 11px; color: var(--text3);
+  margin: -6px 0 12px;
+}
 .mon-kbd-row {
   display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
   padding: 6px 0; border-bottom: 1px solid var(--border);

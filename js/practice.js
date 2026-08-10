@@ -556,6 +556,7 @@ function renderMonKbd(id = "monKbd") {
   const el   = document.getElementById(id);
   const race = id === "raceMonKbd";
   el.innerHTML = `<div class="mon-kbd-title">${MON_KBD.label} — click a key to type</div>` +
+    `<div class="mon-kbd-hint">Recommended keyboard: Mon Anonta (Keyman)</div>` +
     MON_KBD.rows.map(row => `
       <div class="mon-kbd-row">
         <span class="mon-kbd-group">${row.name}</span>
