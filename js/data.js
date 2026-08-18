@@ -106,7 +106,7 @@ function getWordSequence(pool, count) {
     words.push(w);
   }));
   if (words.length < 8) return pool[Math.floor(Math.random() * pool.length)];
-  const n = count || 28 + Math.floor(Math.random() * 18); // 28–45 words per passage (or exact count)
+  const n = count || 12 + Math.floor(Math.random() * 7); // 12–18 words per passage (or exact count)
   let out = [];
   for (let i = 0; i < n; i++) {
     let w = words[Math.floor(Math.random() * words.length)];
